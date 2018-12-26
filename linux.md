@@ -261,3 +261,59 @@ tar zxvf backup.tar
 然后使用git pull整合远程仓库和本地仓库，
 
 `git pull --allow-unrelated-histories` (忽略版本不同造成的影响)
+
+### 15. 提取图片中的经纬度
+
+```
+$ exiftool -n -gpslatitude -gpslongitude IMG_3545.JPG
+
+GPS Latitude : 42.3176472222222
+GPS Longitude : -83.7321083333333
+```
+
+### 16. docker简单负载均衡
+
+[利用nginx和docker实现一个简易的负载均衡](https://www.cnblogs.com/pangziyibudong/p/6211921.html)
+
+[使用nginx+docker配置https负载均衡](https://www.cnblogs.com/gaoxu387/p/7993671.html)
+
+```
+* 在docker中从源中拉一下nginx的官方镜像，docker pull nginx，留着备用
+
+* 在本地目录新建两个文件夹，我这里的新建在/mydata/test1，/mydata/test2/
+
+* 分别在两个test文件夹中新建index.html来标志，在第一个html中输出this is nginx1，在第二个html中输出this is nginx2，
+
+* 通过docker运行两个nginx服务器的容器，并分别将静态目录映射到我们刚刚创建的目录中
+
+[root@catchtouch test2]# docker run --name nginx-test -d -p 8080:80 -v /mydata/test1:/usr/share/nginx/html nginx #第一个，将8080端口映射到容器中的80端口
+[root@catchtouch test2]# docker run --name nginx-test1 -d -p 8081:80 -v /mydata/test2:/usr/share/nginx/html nginx #第二个，将容器中的8081端口映射到容器中的80端口
+
+* 修改宿主机中的nginx的配置文件
+
+在http{}中添加如下代码
+
+upstream myweb { #myproject为自定义名字
+　　ip_hash; #同一个ip一定时间内负载到一台机器
+　　server 127.0.0.1:8080 weight=1 max_fails=2 fail_timeout=2; #weight越大，权重越高，被分配的几率越大
+　　server 127.0.0.1:8081 weight=1 max_fails=2 fail_timeout=1; #我全部在本机，因此用了本地的ip，只要相应换成对应的ip或者域名即可
+}
+
+* 修改default.conf
+
+server {
+    listen 80 default_server;
+    server_name  _;
+
+    location / {　　
+          #如果服务器要获取客户端真实IP，可以用下三句设置主机头和客户端真实地址
+          #proxy_set_header Host $host;
+          #proxy_set_header X-Real-IP $remote_addr;
+          #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+        　proxy_pass http://myweb;  #myweb为之前在nginx.conf中upstream后定义的名字
+     }
+ 
+```
