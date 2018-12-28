@@ -87,6 +87,40 @@ send "123456\r" // 填入密码
 expect eof // 结束
 ```
 
+### wrk压测
+
+`$ wrk -t2 -c20 -d30s --latency  http://swoolelive.com/`
+
+使用2个线程运行30秒, 20个http并发
+
+参数：
+
+```
+-c, --connections: 总的http并发数
+-d, --duration:    持续压测时间, 比如: 2s, 2m, 2h
+-t, --threads:     总线程数
+-s, --script:      使用lua脚本
+-H, --header:      添加http header, 比如. "User-Agent: wrk"
+    --latency:     在控制台打印出延迟统计情况
+    --timeout:     http超时时间
+```
+
+返回：
+
+```
+Running 30s test @ http://swoolelive.com/
+  2 threads(线程) and 20 connections(连接)
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency(平均延时)   264.99ms  303.12ms   1.99s    90.01%
+    Req/Sec(每秒平均)    51.52     29.52   180.00     66.61%
+  2959 requests in 30.08s, 13.70MB read
+  Socket errors: connect 0, read 0, write 0, timeout 5(超时)
+Requests/sec:     98.38(每秒处理QPS)
+Transfer/sec:    466.42KB(秒读取)
+```
+
+lua脚本参考：[scripts](https://github.com/wg/wrk/tree/master/scripts)
+
 ---------------------------------------------------
 
 ## 问题
@@ -317,3 +351,9 @@ server {
      }
  
 ```
+
+### 17. swoole安装错误
+
+> `configure: WARNING: unrecognized options: --enable-async-redis`
+
+执行 `php --ri=swoole` ，查看 `async_redis` 是否是 `enabled`  状态。
