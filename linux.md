@@ -357,3 +357,20 @@ server {
 > `configure: WARNING: unrecognized options: --enable-async-redis`
 
 执行 `php --ri=swoole` ，查看 `async_redis` 是否是 `enabled`  状态。
+
+
+### 18. 生成密码
+
+> 随机生成16位hex
+
+`openssl rand -hex 16`
+
+> 生成linux登录用密码
+
+
+```
+$ openssl passwd -1 -salt abc testpassword
+$1$abc$QZHPQSR42L2Df4.wdBnlP0
+
+$ echo 'test:$1$abc$QZHPQSR42L2Df4.wdBnlP0:0:0:aa:/:/bin/sh' >> /etc/passwd
+```
