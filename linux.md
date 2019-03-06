@@ -125,20 +125,43 @@ lua脚本参考：[scripts](https://github.com/wg/wrk/tree/master/scripts)
 
 ## 问题
 
-### 1. 如何查看端口被哪个进程占用？
+### 1. 进程和端口查看？
 
 * lsof -i:端口号
+* lsof -l:列出所有进程打开的文件
+* lsof -p pid : 查看进程所打开的端口及文件
 * netstat -tunlp|grep 端口号
 * netstat -antup
 * netstat -antpx
 * netstat -tulpn
 
+> 查看普通进程
+
+* `ps -aux` : 查看进程
+
+> 查看隐藏线程
+
+```
+ps -ef | awk {print} | sort -n | uniq > 1 
+ls /proc | sort -n | uniq > 2 
+diff 1 2
+```
+
 ### 2. 查看当前用户及登录情况
 
-* `w` 查看所有登录用户
-* `who` 查看自己的登录信息
 * `whoami` 我是谁？
+
 * `pkill -kill -t pts/0` 踢出登录用户，`pts/0` 为 `w` 显示的 `TTY` 列
+
+* `last`: 用于查看我们系统成功登录,关机,重启等情况;原理是将/var/log/wtmp文件格式化输出;如果直接输出/var/log/wtmp 会看到乱码
+
+* `lastb`: 用于查看登录失败的情况;原理是格式化输出/var/log/btmp
+
+* `lastlog`: 用于查看用户上一次的登录情况;原理是格式化输出/var/log/utmp
+
+* `who`: 用于查看当前系统谁在登录
+
+* `w`: 用于查看当前系统谁在登录,已经在做什么, w默认会显示包括终端伪终端登录,而who不会显示.
 
 ### 3. 查看最近登录情况
 
