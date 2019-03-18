@@ -185,24 +185,6 @@ ogg:// — 音频流
 expect:// — 处理交互式的流
 ```
 
-### 伪协议
-
-```
-file:// — 访问本地文件系统
-http:// — 访问 HTTP(s) 网址
-ftp:// — 访问 FTP(s) URLs
-php:// — 访问各个输入/输出流（I/O streams）
-zlib:// — 压缩流
-data:// — 数据（RFC 2397）
-glob:// — 查找匹配的文件路径模式
-phar:// — PHP 归档
-ssh2:// — Secure Shell 2
-rar:// — RAR
-ogg:// — 音频流
-expect:// — 处理交互式的流
-```
-
-
 ### filter_var函数缺陷
 
 [filter_var函数缺陷](https://github.com/jiangsir404/Audit-Learning/blob/master/filter_var%E5%87%BD%E6%95%B0%E7%BC%BA%E9%99%B7.md)
